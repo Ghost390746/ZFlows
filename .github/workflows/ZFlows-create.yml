@@ -1,0 +1,54 @@
+name: Create ZFlow
+
+on:
+  workflow_dispatch:
+    inputs:
+      zflow_name:
+        description: 'Name of your ZFlow'
+        required: true
+      triggers:
+        description: 'Comma-separated triggers (push, pull_request, schedule)'
+        required: false
+        default: push
+      step_count:
+        description: 'Number of steps to add'
+        required: true
+        default: 1
+      step_files:
+        description: 'Comma-separated list of step files'
+        required: true
+      step_languages:
+        description: 'Comma-separated list of languages for each step (leave blank to auto-detect)'
+        required: false
+        default: ''
+
+jobs:
+  build-zflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run ZFlow Creator
+        run: |
+          echo "Generating zflow.json with full step info..."
+          node zflow-create.js \
+            --name "${{ github.event.inputs.zflow_name }}" \
+            --triggers "${{ github.event.inputs.triggers }}" \
+            --steps "${{ github.event.inputs.step_count }}" \
+            --step-files "${{ github.event.inputs.step_files }}" \
+            --step-languages "${{ github.event.inputs.step_languages }}"
+
+      - name: Upload ZFlow Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: zflow-json
+          path: zflow.json
