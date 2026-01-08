@@ -37,6 +37,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Show GitHub Language List
+        run: |
+          echo "Here is a full list of GitHub-supported languages you can use in step_languages:"
+          echo "JavaScript, TypeScript, Python, Ruby, Java, C, C++, C#, Go, PHP, Shell, Bash, Sh, Swift, Kotlin, Rust, Scala, Objective-C, Perl, Haskell, Lua, Elixir, R, Dart"
+          echo "Use these exactly in your workflow_dispatch step_languages input, separated by commas."
+
       - name: Run ZFlow Creator
         run: |
           echo "Generating zflow.json with full step info..."
